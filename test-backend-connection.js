@@ -3,7 +3,7 @@
 
 import axios from 'axios';
 
-const BACKEND_URL = process.env.VITE_BACKEND_URL || 'https://web-production-69a9.up.railway';
+const BACKEND_URL = process.env.VITE_BACKEND_URL || 'https://web-production-69a9.up.railway.app/api/v1';
 
 console.log('🔧 Testing Backend Connection...');
 console.log('📡 Backend URL:', BACKEND_URL);

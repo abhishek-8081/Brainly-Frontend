@@ -1,7 +1,7 @@
 // Simple test script to check if backend is working
 const axios = require('axios');
 
-const BACKEND_URL = 'http://localhost:3000';
+const BACKEND_URL = 'http://localhost:3000/api/v1';
 
 async function testBackend() {
   try {
