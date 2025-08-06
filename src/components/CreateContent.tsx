@@ -6,6 +6,20 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BACKEND_URL } from "../Config";
 
+// Type for axios error handling
+interface AxiosError {
+  response?: {
+    data?: {
+      msg?: string;
+    };
+    status?: number;
+  };
+  message?: string;
+  config?: {
+    url?: string;
+  };
+}
+
 const ContentType =  {
   Youtube: "youtube",
   Twitter: "twitter",
@@ -22,7 +36,7 @@ interface CreateContentProps {
 
 interface CreateContentResponse {
   msg: string;
-  content?: any;
+  content?: Record<string, unknown>;
   filename?: string;
 }
 
@@ -118,27 +132,33 @@ export const CreateContent = ({open,onClose}: CreateContentProps) => {
         navigate("/dashboard");  
         window.location.reload();             
       
-      } catch (error:any) {// eslint-disable-line @typescript-eslint/no-explicit-any
+      } catch (error: unknown) {
         console.error('Content creation error:', error);
-        console.error('Error response:', error.response?.data);
-        console.error('Error status:', error.response?.status);
-        console.error('Request URL:', error.config?.url);
         
         let errorMsg = 'Content creation failed';
         
-        if (error.response?.status === 401) {
-          errorMsg = 'Please log in again';
-          localStorage.removeItem("token");
-          navigate("/signin");
-          return;
-        } else if (error.response?.status === 403) {
-          errorMsg = 'Invalid or expired token. Please log in again';
-          localStorage.removeItem("token");
-          navigate("/signin");
-          return;
-        } else if (error.response?.data?.msg) {
-          errorMsg = error.response.data.msg;
-        } else if (error.message) {
+        if (error && typeof error === 'object' && 'response' in error) {
+          const axiosError = error as AxiosError;
+          console.error('Error response:', axiosError.response?.data);
+          console.error('Error status:', axiosError.response?.status);
+          console.error('Request URL:', axiosError.config?.url);
+          
+          if (axiosError.response?.status === 401) {
+            errorMsg = 'Please log in again';
+            localStorage.removeItem("token");
+            navigate("/signin");
+            return;
+          } else if (axiosError.response?.status === 403) {
+            errorMsg = 'Invalid or expired token. Please log in again';
+            localStorage.removeItem("token");
+            navigate("/signin");
+            return;
+          } else if (axiosError.response?.data?.msg) {
+            errorMsg = axiosError.response.data.msg;
+          } else if (axiosError.message) {
+            errorMsg = axiosError.message;
+          }
+        } else if (error instanceof Error) {
           errorMsg = error.message;
         }
         

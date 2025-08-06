@@ -10,6 +10,17 @@ import axios from "axios";
 type AxiosRequestConfig = Parameters<typeof axios.delete>[1];
 import { BACKEND_URL } from "../Config";
 
+// Type for axios error handling
+interface AxiosError {
+  response?: {
+    data?: {
+      msg?: string;
+    };
+    status?: number;
+  };
+  message?: string;
+}
+
 
 
 interface DeleteResponse {
@@ -68,12 +79,18 @@ const handleDeleteCard = async () => {
     console.log('Delete response:', response.data);
     alert("Content deleted successfully!");
     window.location.reload();
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("Error deleting content", err);
-    console.error("Error response:", err.response?.data);
-    console.error("Error status:", err.response?.status);
     
-    const errorMsg = err.response?.data?.msg || err.message || "Unknown error";
+    let errorMsg = "Unknown error";
+    if (err && typeof err === 'object' && 'response' in err) {
+      const axiosError = err as AxiosError;
+      console.error("Error response:", axiosError.response?.data);
+      console.error("Error status:", axiosError.response?.status);
+      errorMsg = axiosError.response?.data?.msg || axiosError.message || "Unknown error";
+    } else if (err instanceof Error) {
+      errorMsg = err.message;
+    }
     alert(`Failed to delete content: ${errorMsg}`);
   }
 };

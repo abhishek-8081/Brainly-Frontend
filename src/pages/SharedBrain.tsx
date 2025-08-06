@@ -4,6 +4,17 @@ import axios from "axios";
 import { Card } from "../components/Card";
 import { BACKEND_URL } from "../Config";
 
+// Type for axios error handling
+interface AxiosError {
+  response?: {
+    data?: {
+      msg?: string;
+    };
+    status?: number;
+  };
+  message?: string;
+}
+
 interface SharedContent {
   _id: string;
   title: string;
@@ -36,9 +47,18 @@ const SharedBrain = () => {
         setContent(response.data.content);
         setOwner(response.data.owner);
         setError("");
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error("Failed to fetch shared brain:", err);
-        setError(err.response?.data?.msg || "Failed to load shared brain");
+        
+        let errorMsg = "Failed to load shared brain";
+        if (err && typeof err === 'object' && 'response' in err) {
+          const axiosError = err as AxiosError;
+          errorMsg = axiosError.response?.data?.msg || "Failed to load shared brain";
+        } else if (err instanceof Error) {
+          errorMsg = err.message;
+        }
+        
+        setError(errorMsg);
       } finally {
         setLoading(false);
       }
