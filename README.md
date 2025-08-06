@@ -4,7 +4,7 @@
 
 **Created by [Abhishek Kumar](https://github.com/abhishek-8081) 👨‍💻**
 
-![Brainly Screenshot]()
+![Brainly Screenshot](https://drive.google.com/file/d/1SKdV6NX7GNh_0dkc8Pw735fBee07IX4x/view?usp=sharing)
 *Brainly Dashboard - Your centralized knowledge hub*
 
 ---

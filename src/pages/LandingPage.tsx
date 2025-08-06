@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/Button";
 import { useEffect, useState } from "react";
+import { DebugInfo } from "../components/DebugInfo";
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -358,6 +359,9 @@ const LandingPage = () => {
           </div>
         </div>
       </footer>
+      
+      {/* Temporary debug info - remove after fixing environment variables */}
+      <DebugInfo />
     </div>
   );
 };

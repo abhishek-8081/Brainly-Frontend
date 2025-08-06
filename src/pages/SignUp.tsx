@@ -4,6 +4,17 @@ import { Button } from "../components/Button"
 import { InputField } from "../components/InputField"
 import { useNavigate } from "react-router-dom";
 import { BACKEND_URL } from "../Config";
+
+// Type for axios error handling
+interface AxiosError {
+  response?: {
+    data?: {
+      msg?: string;
+    };
+    status?: number;
+  };
+  message?: string;
+}
 interface SignUpResponse {
   msg: string;
 }
@@ -22,19 +33,38 @@ export const SignUp = () => {
       return;
     }
     
+    console.log('🔧 SignUp Debug Info:');
+    console.log('📡 Backend URL:', BACKEND_URL);
+    console.log('👤 Username:', username);
+    console.log('🌍 Environment Mode:', import.meta.env.MODE);
+    
     try {
       const response = await axios.post<SignUpResponse>(`${BACKEND_URL}/signup`, {
         username,
         password
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        timeout: 10000, // 10 second timeout
       });
  
+      console.log('✅ Signup successful:', response.data);
+      alert('Account created successfully! Please sign in.');
       navigate("/signin");
-      console.log(response.data);
 
     } 
-    catch (error:any) {
+    catch (error: unknown) {
       console.error('Signup failed:', error);
-      const errorMsg = error.response?.data?.msg || error.message;
+      
+      let errorMsg = 'Unknown error';
+      if (error && typeof error === 'object' && 'response' in error) {
+        const axiosError = error as AxiosError;
+        errorMsg = axiosError.response?.data?.msg || axiosError.message || 'Unknown error';
+      } else if (error instanceof Error) {
+        errorMsg = error.message;
+      }
+      
       alert('Signup failed: ' + errorMsg);
     }
   }

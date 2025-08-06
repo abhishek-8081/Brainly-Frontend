@@ -10,6 +10,17 @@ import {PlusIcon} from "../icons/PlusIcon";
 import {ShareIcon} from "../icons/ShareIcon";
 import { BACKEND_URL } from "../Config";
 
+// Type for axios error handling
+interface AxiosError {
+  response?: {
+    data?: {
+      msg?: string;
+    };
+    status?: number;
+  };
+  message?: string;
+}
+
 
 interface ShareLinkResponse {
   hash: string;
@@ -95,10 +106,17 @@ const DashBoard = () => {
      
         fallbackCopyToClipboard(shareUrl);
       }
-    } catch (err: any) {
-     
+    } catch (err: unknown) {
+      console.error('❌ Share error:', err);
       
-      const errorMsg = err.response?.data?.msg || "Something went wrong while sharing.";
+      let errorMsg = "Something went wrong while sharing.";
+      if (err && typeof err === 'object' && 'response' in err) {
+        const axiosError = err as AxiosError;
+        errorMsg = axiosError.response?.data?.msg || "Something went wrong while sharing.";
+      } else if (err instanceof Error) {
+        errorMsg = err.message;
+      }
+      
       alert(`❌ ${errorMsg}`);
     } finally {
       setIsSharing(false);

@@ -5,6 +5,18 @@ import { useRef } from "react"
 import axios from "axios"
 import { useNavigate } from "react-router-dom";
 import { BACKEND_URL } from "../Config";
+
+// Type for axios error handling
+interface AxiosError {
+  response?: {
+    data?: {
+      msg?: string;
+    };
+    status?: number;
+  };
+  message?: string;
+}
+
 interface SignInResponse {
   msg: string;
   token: string;
@@ -25,19 +37,39 @@ const SignIn = () => {
                 return;
                }
 
+              console.log('🔧 SignIn Debug Info:');
+              console.log('📡 Backend URL:', BACKEND_URL);
+              console.log('👤 Username:', username);
+              console.log('🌍 Environment Mode:', import.meta.env.MODE);
+
               try {
                  const response = await axios.post<SignInResponse>(`${BACKEND_URL}/signin`, {
                        username,
                        password
+                    }, {
+                      headers: {
+                        'Content-Type': 'application/json',
+                      },
+                      timeout: 10000, // 10 second timeout
                     });
+                   
+                   console.log('✅ Signin successful:', response.data);
                    localStorage.setItem("token",response.data.token);
                    navigate("/dashboard");
                
       
-            } catch (error:any) {  // eslint-disable-line @typescript-eslint/no-explicit-any
+            } catch (error: unknown) {
                     console.error('Signin failed:', error);
-                     const errorMsg = error.response?.data?.msg || error.message;
-                 alert('Signin failed: ' + errorMsg);
+                    
+                    let errorMsg = 'Unknown error';
+                    if (error && typeof error === 'object' && 'response' in error) {
+                      const axiosError = error as AxiosError;
+                      errorMsg = axiosError.response?.data?.msg || axiosError.message || 'Unknown error';
+                    } else if (error instanceof Error) {
+                      errorMsg = error.message;
+                    }
+                    
+                    alert('Signin failed: ' + errorMsg);
                 }
 
        }
