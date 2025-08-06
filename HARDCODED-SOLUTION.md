@@ -10,8 +10,8 @@ Environment variables are now **hardcoded directly in the source code** so your 
 ### **✅ Hardcoded Backend URL**
 ```typescript
 // src/Config.ts - NOW HARDCODED
-const PRODUCTION_BACKEND_URL = "https://web-production-69a9.up.railway.app/api/v1";
-const LOCAL_BACKEND_URL = "http://localhost:3000/api/v1";
+const PRODUCTION_BACKEND_URL = "https://web-production-69a9.up.railway.app";
+const LOCAL_BACKEND_URL = "http://localhost:3000";
 
 // Automatically uses production URL on Netlify, local URL in development
 export const BACKEND_URL = isLocalDev ? LOCAL_BACKEND_URL : PRODUCTION_BACKEND_URL;
@@ -25,8 +25,8 @@ export const DEV_MODE = import.meta.env.MODE === 'development';
 ```
 
 ### **✅ Smart Environment Detection**
-- **On Netlify (Production)**: Uses `https://web-production-69a9.up.railway.app/api/v1`
-- **On Localhost (Development)**: Uses `http://localhost:3000/api/v1`
+- **On Netlify (Production)**: Uses `https://web-production-69a9.up.railway.app`
+- **On Localhost (Development)**: Uses `http://localhost:3000`
 - **No manual configuration needed anywhere!**
 
 ---

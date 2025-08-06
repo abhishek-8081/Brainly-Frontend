@@ -1,7 +1,7 @@
 // Backend URL configuration - HARDCODED for immediate deployment
 // This ensures the app works without external environment variable configuration
-const PRODUCTION_BACKEND_URL = "https://web-production-69a9.up.railway.app/api/v1";
-const LOCAL_BACKEND_URL = "http://localhost:3000/api/v1";
+const PRODUCTION_BACKEND_URL = "https://web-production-69a9.up.railway.app";
+const LOCAL_BACKEND_URL = "http://localhost:3000";
 
 // Use production URL by default, only use local in development mode
 const isLocalDev = import.meta.env.MODE === 'development' && window.location.hostname === 'localhost';
